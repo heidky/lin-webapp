@@ -12,7 +12,13 @@ export type MotionCmd = Array<[string, number]>
 
 export default class DeviceManager {
   connected: boolean = false
-  deviceName?: string
+
+  get deviceName() {
+    return this.device?.name
+  }
+
+  reconnecting: boolean = false
+  reconnectTimeoutId: any = null
 
   device: BluetoothDevice | null = null
   server: BluetoothRemoteGATTServer | null = null
@@ -40,20 +46,45 @@ export default class DeviceManager {
         filters: [{ services: [SERVICE] }],
       })
 
-      runInAction(() => {
-        this.connected = true
-        this.deviceName = device.name
-        console.log('device connected:', device.name)
-      })
-
       await this.connect(device)
     } catch {
       console.warn('closed connect prompt')
     }
   }
 
+  async _attemptReconnect() {
+    if (!this.connected && this.device) {
+      console.log('Reconnect attempt')
+      try {
+        runInAction(() => (this.reconnecting = true))
+        await this.connect(this.device)
+        this._clearReconnect()
+      } catch {
+        runInAction(() => {
+          this._clearReconnect()
+          this.reconnectTimeoutId = setTimeout(
+            () => this._attemptReconnect(),
+            2000
+          )
+        })
+      }
+    }
+  }
+
+  _clearReconnect() {
+    this.reconnecting = false
+    clearTimeout(this.reconnectTimeoutId)
+    this.reconnectTimeoutId = null
+  }
+
   async connect(device: BluetoothDevice) {
+    if (!device) return
+    this.device = device
     this.server = await device.gatt!.connect()
+    runInAction(() => {
+      this.connected = true
+      console.log('device connected:', device.name)
+    })
     this.service = await this.server.getPrimaryService(SERVICE)
 
     this.infoChar = await this.service.getCharacteristic(CHAR_INFO)
@@ -66,12 +97,13 @@ export default class DeviceManager {
       action(() => {
         console.log('device disconneted')
         this.connected = false
-        this.deviceName = undefined
 
         this.infoChar = null
         this.configChar = null
         this.configCharTx = null
         this.motionCharTx = null
+
+        this._attemptReconnect()
       })
     )
 

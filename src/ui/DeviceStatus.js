@@ -4,6 +4,7 @@ import { deviceManger } from '../store/store'
 function DeviceStatus() {
   const connected = deviceManger.connected
   const name = deviceManger.deviceName
+  const reconencting = deviceManger.reconnecting
 
   const onConnect = () => {
     deviceManger.connectPrompt()
@@ -22,6 +23,8 @@ function DeviceStatus() {
           Connect
         </button>
       )}
+
+      {reconencting && <span className="text-white">Reconnecting...</span>}
     </div>
   )
 }
