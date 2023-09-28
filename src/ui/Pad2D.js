@@ -40,7 +40,7 @@ export default function Pad2D({ x, y, onMove, valid = true }) {
       if (!div.current) return
       const [px, py] = getPos(div.current, e)
 
-      if (e.buttons === 1) {
+      if (e.buttons === 1 && e.pressure > 0) {
         // console.log(x, y, h, w)
         if (press) onPosUpdate(px, py)
       } else {
@@ -52,14 +52,25 @@ export default function Pad2D({ x, y, onMove, valid = true }) {
     return () => window.removeEventListener('pointermove', onMove1)
   }, [press, onPosUpdate])
 
+  // stop pressing on pointer up
+  useEffect(() => {
+    const onUp = () => setPress(false)
+    window.addEventListener('pointerup', onUp)
+    return () => window.removeEventListener('pointerup', onUp)
+  }, [press])
+
   const onDown = (e) => {
     setPress(true)
     const [px, py] = getPos(div.current, e)
-    onPosUpdate(px, py)
+    if (px >= 0 && px <= 1 && py >= 0 && py <= 1) onPosUpdate(px, py)
+
+    const a = document.createElement('p')
+    a.innerHTML = 'Hello'
+    document.querySelector('body').append(a)
   }
 
   return (
-    <div className="h-full w-full bg-gray-600 rounded-xl select-none p-4">
+    <div className="h-full w-full bg-gray-600 rounded-xl select-none p-4 touch-none">
       <div
         ref={div}
         className="h-full w-full relative select-none"
