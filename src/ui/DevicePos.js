@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite'
 import ReactSlider from 'react-slider'
-import { deviceManger, motionManager } from '../store/store'
+import { motionManager } from '../store/store'
 
 function DevicePos() {
   const absolute = motionManager.absolutePosition
