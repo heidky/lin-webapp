@@ -41,14 +41,14 @@ const RestartButton = ({ onClick, hz = 60, time = 1 }) => {
       setPerc(0)
       setFired(false)
     }
-  }, [pressed])
+  }, [pressed, hz, time])
 
   useEffect(() => {
     if (perc >= 1.1 && !fired) {
       setFired(true)
       onClick()
     }
-  }, [perc, fired])
+  }, [perc, fired, onClick])
 
   return (
     <button
@@ -113,7 +113,7 @@ function DeviceStatus() {
 
       <div className="flex-grow" />
 
-      {!connected || <ConnectButton onClick={onConnect} />}
+      {!connected && <ConnectButton onClick={onConnect} />}
       {connected && <RestartButton onClick={onRestart} />}
     </div>
   )
