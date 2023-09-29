@@ -49,7 +49,11 @@ export default function Pad2D({ x, y, onMove, valid = true }) {
     }
 
     window.addEventListener('pointermove', onMove1)
-    return () => window.removeEventListener('pointermove', onMove1)
+    window.addEventListener('pointerdown', onMove1)
+    return () => {
+      window.removeEventListener('pointermove', onMove1)
+      window.removeEventListener('pointerdown', onMove1)
+    }
   }, [press, onPosUpdate])
 
   // stop pressing on pointer up
@@ -70,18 +74,20 @@ export default function Pad2D({ x, y, onMove, valid = true }) {
   }
 
   return (
-    <div className="h-full w-full bg-gray-600 rounded-xl select-none p-4 touch-none">
+    <div
+      className="h-full w-full bg-gray-600 rounded-xl select-none touch-none p-5"
+      onPointerDown={onDown}
+    >
       <div
         ref={div}
         className="h-full w-full relative select-none"
         // onPointerDown={() => setPress(true)}
-        onPointerDown={onDown}
         // onPointerLeave={() => setPress(false)}
         // onBlur={() => setPress(false)}
       >
-        <div ref={thumb} className="h-8 w-8 absolute">
+        <div ref={thumb} className="h-10 w-10 absolute">
           <div
-            className={`rounded-full h-full w-full ${
+            className={`rounded-xl h-full w-full ${
               !valid ? 'bg-gray-400' : 'bg-fuchsia-400'
             }`}
             style={{ marginLeft: '-50%', marginTop: '-50%' }}
