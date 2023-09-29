@@ -1,5 +1,3 @@
-import DeviceInfo from './ui/DeviceInfo'
-import DevicePos from './ui/DevicePos'
 import DeviceStatus from './ui/DeviceStatus'
 import { observer } from 'mobx-react-lite'
 import MotionControls from './ui/MotionControls'
@@ -9,7 +7,6 @@ function App() {
     <div className="min-h-screen flex flex-col items-stretch justify-stretch bg-gray-900 ">
       <div className="flex flex-col items-stretch p-4 lg:w-96">
         <DeviceStatus />
-        <DeviceInfo />
         <div className="h-4" />
         <MotionControls />
       </div>
