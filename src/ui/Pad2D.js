@@ -67,15 +67,11 @@ export default function Pad2D({ x, y, onMove, valid = true }) {
     setPress(true)
     const [px, py] = getPos(div.current, e)
     if (px >= 0 && px <= 1 && py >= 0 && py <= 1) onPosUpdate(px, py)
-
-    const a = document.createElement('p')
-    a.innerHTML = 'Hello'
-    document.querySelector('body').append(a)
   }
 
   return (
     <div
-      className="h-full w-full bg-gray-600 rounded-xl select-none touch-none p-5"
+      className="h-full w-full bg-gray-600 rounded-lg select-none touch-none p-5"
       onPointerDown={onDown}
     >
       <div
@@ -87,8 +83,8 @@ export default function Pad2D({ x, y, onMove, valid = true }) {
       >
         <div ref={thumb} className="h-10 w-10 absolute">
           <div
-            className={`rounded-xl h-full w-full ${
-              !valid ? 'bg-gray-400' : 'bg-fuchsia-400'
+            className={`rounded-lg h-full w-full ${
+              !valid ? 'bg-gray-400' : 'bg-pink-400'
             }`}
             style={{ marginLeft: '-50%', marginTop: '-50%' }}
           ></div>

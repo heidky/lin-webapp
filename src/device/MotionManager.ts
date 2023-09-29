@@ -5,11 +5,9 @@ class MotionManager {
   deviceManager: DeviceManager
 
   absolutePosition: number = 0
-  _vibePos: [number, number] = [0, 0]
-
-  get vibePos() {
-    return this._vibePos
-  }
+  vibeThrow: number = 0
+  vibeSpeed: number = 0.5
+  vibeSelected: boolean = false
 
   constructor(deviceManager: DeviceManager) {
     this.deviceManager = deviceManager
@@ -26,29 +24,32 @@ class MotionManager {
       ['s', 3],
     ]
 
+    this.vibeSelected = false
     this.deviceManager.sendMotionTr(motionData)
   }
 
-  setVibePos(x: number, y: number) {
-    if (x > 1) x = 1
-    if (x < 0) x = 0
-    if (y > 1) y = 1
-    if (y < 0) y = 0
+  setVibe(t: number, s: number) {
+    if (t > 1) t = 1
+    if (t < 0) t = 0
+    if (s > 1) s = 1
+    if (s < 0) s = 0
 
-    if (this._vibePos[0] !== x || this._vibePos[1] !== y) {
-      this._vibePos = [x, y]
+    if (this.vibeThrow !== t || this.vibeSpeed !== s) {
+      this.vibeThrow = t
+      this.vibeSpeed = s
 
       const motionData: MotionCmd = [
-        ['t', x],
-        ['s', y],
+        ['t', t],
+        ['s', s],
       ]
 
+      this.vibeSelected = true
       this.deviceManager.sendMotionTr(motionData)
     }
   }
 
   stopVibe() {
-    this.setVibePos(0, 0)
+    this.setVibe(0, this.vibeSpeed)
   }
 }
 
