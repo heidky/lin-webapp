@@ -5,8 +5,8 @@ class MotionManager {
   deviceManager: DeviceManager
 
   absolutePosition: number = 1
-  vibeThrow: number = 0
-  vibeSpeed: number = 0.5
+  vibeThrow: number = 0.5
+  vibeSpeed: number = 0
   vibeSelected: boolean = false
 
   constructor(deviceManager: DeviceManager) {
@@ -49,7 +49,7 @@ class MotionManager {
   }
 
   stopVibe() {
-    this.setVibe(0, this.vibeSpeed)
+    this.setVibe(this.vibeThrow, 0)
   }
 }
 
