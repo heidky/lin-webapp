@@ -10,6 +10,13 @@ const CHAR_MOTION_TX = '50300008-0023-4bd4-bbd5-a6920e4c5653'
 
 export type MotionCmd = Array<[string, number]>
 
+export interface DeviceInfo {
+  state: number
+  errorCode: number
+  rodLenght: number
+  slowLoops: number
+}
+
 export default class DeviceManager {
   connected: boolean = false
 
@@ -29,7 +36,7 @@ export default class DeviceManager {
   configCharTx: BluetoothRemoteGATTCharacteristic | null = null
   motionCharTx: BluetoothRemoteGATTCharacteristic | null = null
 
-  deviceInfo: Record<string, number> | null = null
+  deviceInfo: DeviceInfo | null = null
   deviceConfig: Record<string, number> | null = null
 
   sendMotionTr: (cmd: MotionCmd) => void
@@ -121,7 +128,7 @@ export default class DeviceManager {
   }
 
   async sendConfig(id: string, value: number) {
-    await this._sendText(this.configCharTx, `${id}:${value.toFixed(4)}`)
+    await this._sendText(this.configCharTx, `${id}:${value.toFixed(4)}`, true)
   }
 
   async sendConfigList(update: Record<string, number>) {
@@ -156,13 +163,16 @@ export default class DeviceManager {
 
   async _sendText(
     char: BluetoothRemoteGATTCharacteristic | null = null,
-    text: string
+    text: string,
+    withResponse: boolean = false
   ) {
     if (!char) return
 
     const encoder = new TextEncoder()
     const buffer = encoder.encode(text)
-    await char.writeValueWithoutResponse(buffer)
+
+    if (withResponse) await char.writeValueWithResponse(buffer)
+    else await char.writeValueWithoutResponse(buffer)
   }
 
   _onConfigUpdate() {
@@ -174,7 +184,16 @@ export default class DeviceManager {
   _onInfoUpdate() {
     const info = this._decodeText(this.infoChar)
     console.log('device info updated:', info)
-    this.deviceInfo = info
+    if (info) {
+      this.deviceInfo = {
+        state: info['St'],
+        rodLenght: info['Rl'],
+        slowLoops: info['Sl'],
+        errorCode: info['Ec'],
+      }
+    } else {
+      this.deviceInfo = null
+    }
   }
 
   async restartDevice() {
