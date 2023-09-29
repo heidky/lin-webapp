@@ -176,4 +176,8 @@ export default class DeviceManager {
     console.log('device info updated:', info)
     this.deviceInfo = info
   }
+
+  async restartDevice() {
+    await this.sendConfig('Rst', 1)
+  }
 }

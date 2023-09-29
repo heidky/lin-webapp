@@ -4,7 +4,7 @@ import DeviceManager, { MotionCmd } from './DeviceManager'
 class MotionManager {
   deviceManager: DeviceManager
 
-  absolutePosition: number = 0
+  absolutePosition: number = 1
   vibeThrow: number = 0
   vibeSpeed: number = 0.5
   vibeSelected: boolean = false
