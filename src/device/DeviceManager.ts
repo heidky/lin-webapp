@@ -132,8 +132,15 @@ export default class DeviceManager {
   }
 
   async sendConfigList(update: Record<string, number>) {
-    for (const [id, value] of Object.entries(update)) {
-      await this.sendConfig(id, value)
+    for (let [id, value] of Object.entries(update)) {
+      // if id exists
+      if (this.deviceConfig && Object.hasOwn(this.deviceConfig as object, id)) {
+        // if id changed
+        if (!isNaN(value) && this.deviceConfig[id] !== value) {
+          await this.sendConfig(id, value)
+          console.log('sending config:', id, value)
+        }
+      } else console.warn('skipping send config:', id, value)
     }
   }
 

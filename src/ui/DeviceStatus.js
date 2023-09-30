@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite'
 import { deviceManger } from '../store/store'
 import { FiBluetooth } from 'react-icons/fi'
 import { RiRestartLine } from 'react-icons/ri'
+import { IoIosSettings } from 'react-icons/io'
 import { useEffect, useState } from 'react'
 
 const StatusDot = ({ status }) => (
@@ -21,6 +22,18 @@ const ConnectButton = ({ onClick }) => (
       Connect
     </span>{' '}
     <FiBluetooth />
+  </button>
+)
+
+const SettingsButton = ({ onClick }) => (
+  <button
+    className="text-white bg-gray-600 hover:bg-opacity-90 text-xl p-1.5 rounded-md flex flex-row items-center gap-x-2 px-3"
+    onClick={onClick}
+  >
+    {/* <span className="text-sm font-bold text-gray-200 tracking-wider">
+      S
+    </span>{' '} */}
+    <IoIosSettings />
   </button>
 )
 
@@ -73,7 +86,7 @@ const RestartButton = ({ onClick, hz = 60, time = 1 }) => {
   )
 }
 
-function DeviceStatus() {
+function DeviceStatus({ onSettings }) {
   const connected = deviceManger.connected
   const name = deviceManger.deviceName
   const reconencting = deviceManger.reconnecting
@@ -98,7 +111,7 @@ function DeviceStatus() {
   }
 
   return (
-    <div className="flex flex-row items-center gap-x-2">
+    <div className="flex flex-row items-center gap-x-2 relative">
       <StatusDot status={status} />
 
       <span
@@ -113,6 +126,7 @@ function DeviceStatus() {
 
       <div className="flex-grow" />
 
+      {connected && <SettingsButton onClick={onSettings} />}
       {!connected && <ConnectButton onClick={onConnect} />}
       {connected && <RestartButton onClick={onRestart} />}
     </div>
