@@ -34,7 +34,7 @@ export default function RestartDeviceButton({
 
   return (
     <button
-      className="text-white bg-gray-600 hover:bg-opacity-90 active:bg-gray-500 text-xl p-1.5 rounded-md flex flex-row items-center justify-center relative overflow-hidden select-none"
+      className="text-white bg-gray-600 hover:bg-opacity-90 active:bg-gray-500 disabled:bg-gray-700 text-xl p-1.5 rounded-md flex flex-row items-center justify-center relative overflow-hidden select-none"
       onPointerDown={() => setPressed(true)}
       onPointerUp={() => setPressed(false)}
       onBlur={() => setPressed(false)}

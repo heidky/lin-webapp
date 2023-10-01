@@ -21,17 +21,19 @@ function isMapDiff(src, dest) {
 }
 
 const ConfigInput = ({ config, id, onValue, disabled: dis }) => {
-  const value = config?.[id] ?? ''
+  let value = config?.[id] ?? ''
+
   const disabled = value === undefined || value === null || dis
 
   const onChange = (e) => {
-    onValue(id, e.target.value)
+    const v = e.target.value.replace(/[^0-9-.]+/, '')
+    onValue(id, v)
   }
 
   return (
     <input
-      type="number"
-      className="w-full rounded-md bg-gray-700 text-gray-300 px-4 py-1 focus:text-white focus:bg-gray-600 font-mono"
+      type="text"
+      className="w-full rounded-md bg-gray-600 text-gray-300 px-4 py-1 focus:text-white focus:bg-gray-600 font-mono disabled:text-gray-400"
       value={value}
       onChange={onChange}
       disabled={disabled}
@@ -46,7 +48,7 @@ const Label = ({ children }) => (
 const Button = ({ onClick, children, disabled, className = '' }) => (
   <button
     disabled={disabled}
-    className={`text-white bg-gray-600 hover:bg-opacity-90 disabled:opacity-75 disabled:bg-gray-700 p-1.5 rounded-md flex flex-row items-center gap-x-2 px-3 font-bold text-md tracking-wide transition-colors ${className}`}
+    className={`text-white bg-gray-600 hover:bg-opacity-90 disabled:opacity-50 disabled:bg-gray-700 p-1.5 rounded-md flex flex-row items-center gap-x-2 px-3 font-bold text-md tracking-wide transition-colors ${className}`}
     onClick={onClick}
   >
     {children}
@@ -102,7 +104,7 @@ function ConfigPanel() {
   }
 
   return (
-    <div className="flex flex-col py-4 px-5">
+    <div className="flex flex-col p-3">
       <h1 className="text-2xl font-bold text-gray-400">Configuration</h1>
       {showForm && (
         <>
