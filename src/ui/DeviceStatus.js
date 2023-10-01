@@ -1,9 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import { deviceManger } from '../store/store'
 import { FiBluetooth } from 'react-icons/fi'
-import { RiRestartLine } from 'react-icons/ri'
 import { IoIosSettings } from 'react-icons/io'
-import { useEffect, useState } from 'react'
 
 const StatusDot = ({ status }) => (
   <div
@@ -37,55 +35,6 @@ const SettingsButton = ({ onClick }) => (
   </button>
 )
 
-const RestartButton = ({ onClick, hz = 60, time = 1 }) => {
-  const [pressed, setPressed] = useState(false)
-  const [fired, setFired] = useState(false)
-  const [perc, setPerc] = useState(0)
-
-  const bgRight = ((1 - perc) * 100).toFixed(2) + '%'
-
-  useEffect(() => {
-    if (pressed) {
-      const handle = setInterval(() => {
-        setPerc((p) => p + (1 / hz) * (1 / time))
-      }, 1000 / hz)
-      return () => clearInterval(handle)
-    } else {
-      setPerc(0)
-      setFired(false)
-    }
-  }, [pressed, hz, time])
-
-  useEffect(() => {
-    if (perc >= 1.1 && !fired) {
-      setFired(true)
-      onClick()
-    }
-  }, [perc, fired, onClick])
-
-  return (
-    <button
-      className="text-white bg-gray-600 text-xl p-1.5 rounded-md flex flex-row items-center relative overflow-hidden select-none"
-      onPointerDown={() => setPressed(true)}
-      onPointerUp={() => setPressed(false)}
-      onBlur={() => setPressed(false)}
-    >
-      <div
-        className={`absolute top-0 bottom-0 left-0 transition-colors ${
-          fired ? 'bg-green-500' : 'bg-orange-500'
-        }`}
-        style={{ right: bgRight }}
-      />
-      <span className="text-sm font-bold text-gray-200 tracking-wider mr-2 z-10">
-        Reset
-      </span>{' '}
-      <span className="z-10">
-        <RiRestartLine />
-      </span>
-    </button>
-  )
-}
-
 function DeviceStatus({ onSettings }) {
   const connected = deviceManger.connected
   const name = deviceManger.deviceName
@@ -103,11 +52,6 @@ function DeviceStatus({ onSettings }) {
 
   const onConnect = () => {
     deviceManger.connectPrompt()
-  }
-
-  const onRestart = () => {
-    deviceManger.restartDevice()
-    console.log('Restart request')
   }
 
   return (
@@ -128,7 +72,6 @@ function DeviceStatus({ onSettings }) {
 
       {connected && <SettingsButton onClick={onSettings} />}
       {!connected && <ConnectButton onClick={onConnect} />}
-      {connected && <RestartButton onClick={onRestart} />}
     </div>
   )
 }

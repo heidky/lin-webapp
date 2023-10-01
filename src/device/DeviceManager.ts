@@ -204,6 +204,10 @@ export default class DeviceManager {
   }
 
   async restartDevice() {
-    await this.sendConfig('Rst', 1)
+    try {
+      await this.sendConfig('Rst', 1)
+    } catch (e) {
+      console.error(e)
+    }
   }
 }

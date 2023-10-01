@@ -1,25 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import { useState, useEffect } from 'react'
 import { deviceManger } from '../../store/store'
-
-const ConfigInput = ({ config, id, onValue, disabled: dis }) => {
-  const value = config?.[id] ?? ''
-  const disabled = value === undefined || value === null || dis
-
-  const onChange = (e) => {
-    onValue(id, e.target.value)
-  }
-
-  return (
-    <input
-      type="number"
-      className="w-full"
-      value={value}
-      onChange={onChange}
-      disabled={disabled}
-    />
-  )
-}
+import RestartDeviceButton from './RestartDeviceButton'
 
 function asNumericalMap(obj) {
   const entries = Object.entries(obj).map(([id, value]) => [
@@ -38,6 +20,39 @@ function isMapDiff(src, dest) {
   )
 }
 
+const ConfigInput = ({ config, id, onValue, disabled: dis }) => {
+  const value = config?.[id] ?? ''
+  const disabled = value === undefined || value === null || dis
+
+  const onChange = (e) => {
+    onValue(id, e.target.value)
+  }
+
+  return (
+    <input
+      type="number"
+      className="w-full rounded-md bg-gray-700 text-gray-300 px-4 py-1 focus:text-white focus:bg-gray-600 font-mono"
+      value={value}
+      onChange={onChange}
+      disabled={disabled}
+    />
+  )
+}
+
+const Label = ({ children }) => (
+  <label className="text-gray-300 font-bold text-md">{children}</label>
+)
+
+const Button = ({ onClick, children, disabled, className = '' }) => (
+  <button
+    disabled={disabled}
+    className={`text-white bg-gray-600 hover:bg-opacity-90 disabled:opacity-75 disabled:bg-gray-700 p-1.5 rounded-md flex flex-row items-center gap-x-2 px-3 font-bold text-md tracking-wide transition-colors ${className}`}
+    onClick={onClick}
+  >
+    {children}
+  </button>
+)
+
 function ConfigPanel() {
   const connected = deviceManger.connected
   // const name = deviceManger.deviceName
@@ -47,6 +62,11 @@ function ConfigPanel() {
   const showForm = (connected && deviceConfig) || true
   const [pending, setPending] = useState(false)
   const dirty = isMapDiff(localConfig, deviceConfig)
+
+  const onRestart = () => {
+    deviceManger.restartDevice()
+    console.log('Restart request')
+  }
 
   // reset local config when `deviceConfig` updates
   useEffect(() => {
@@ -82,23 +102,31 @@ function ConfigPanel() {
   }
 
   return (
-    <div className="flex flex-col p-3">
-      <h1>Configuration</h1>
+    <div className="flex flex-col py-4 px-5">
+      <h1 className="text-2xl font-bold text-gray-400">Configuration</h1>
       {showForm && (
         <>
-          <h2>PID</h2>
-          <table>
+          <h2 className="text-xl font-bold text-gray-300 mt-4">PID</h2>
+          <table className="gap-x-3">
             <thead>
               <tr>
                 <td></td>
-                <td>P</td>
-                <td>I</td>
-                <td>D</td>
+                <td className="text-center">
+                  <Label>P</Label>
+                </td>
+                <td className="text-center">
+                  <Label>I</Label>
+                </td>
+                <td className="text-center">
+                  <Label>D</Label>
+                </td>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="px-3">P</td>
+                <td className="px-3">
+                  <Label>P</Label>
+                </td>
                 <td>
                   <ConfigInput {...inputProps} id={'Pp'} />
                 </td>
@@ -110,7 +138,9 @@ function ConfigPanel() {
                 </td>
               </tr>
               <tr>
-                <td className="px-3">S</td>
+                <td className="px-3">
+                  <Label>S</Label>
+                </td>
                 <td>
                   <ConfigInput {...inputProps} id={'Vp'} />
                 </td>
@@ -124,31 +154,42 @@ function ConfigPanel() {
             </tbody>
           </table>
 
-          <h2>Motor</h2>
+          <h2 className="text-xl font-bold text-gray-300 mt-6 mb-2">Motor</h2>
           <div className="flex flex-row gap-x-1">
             <div className="flex flex-col">
-              <label>Tolerance</label>
+              <Label>Tolerance</Label>
               <ConfigInput {...inputProps} id={'To'} />
             </div>
             <div className="flex flex-col">
-              <label>Force</label>
+              <Label>Force</Label>
               <ConfigInput {...inputProps} id={'F'} />
             </div>
             <div className="flex flex-col">
-              <label>Smoothing</label>
+              <Label>Smoothing</Label>
               <ConfigInput {...inputProps} id={'Ta'} />
             </div>
           </div>
 
-          <div className="flex flex-row gap-x-2">
-            <button onClick={onReset} disabled={!dirty || pending}>
+          <div className="flex flex-row gap-x-2 my-4 justify-end">
+            <Button onClick={onReset} disabled={!dirty || pending}>
               Reset
-            </button>
-            <button onClick={onSend} disabled={!dirty || pending}>
+            </Button>
+            <Button
+              onClick={onSend}
+              disabled={!dirty || pending}
+              className="bg-blue-500"
+            >
               Send
-            </button>
+            </Button>
           </div>
-          {pending && 'sending'}
+
+          <div className="h-1 bg-gray-700 rounded-full mb-4" />
+
+          <RestartDeviceButton
+            onClick={onRestart}
+            time={1}
+            disabled={!connected}
+          />
         </>
       )}
     </div>
