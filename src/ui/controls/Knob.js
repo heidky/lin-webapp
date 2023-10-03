@@ -93,7 +93,7 @@ export default function Knob({
       <Notch rotation={(rotationMax + rotationMin) / 2} />
 
       <div className="absolute pointer-events-none top-full left-1/2 -translate-x-1/2 mt-4">
-        <span className=" text-gray-500 text-lg font-bold">
+        <span className="text-gray-500 text-2xl font-bold">
           {(value * 100).toFixed(0)}%
         </span>
       </div>
