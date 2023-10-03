@@ -1,6 +1,6 @@
 import DeviceStatus from './ui/DeviceStatus'
 import { observer } from 'mobx-react-lite'
-import MotionControls from './ui/MotionControls'
+import MotionControls from './ui/controls/MotionControls'
 import { useState } from 'react'
 import ConfigPanel from './ui/config/ConfigPanel'
 

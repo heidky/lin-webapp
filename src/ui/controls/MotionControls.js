@@ -1,5 +1,5 @@
 import Pad2D from './Pad2D'
-import { motionManager } from '../store/store'
+import { motionManager } from '../../store/store'
 import { observer } from 'mobx-react-lite'
 
 const StopButton = ({ onClick, disabled }) => (
