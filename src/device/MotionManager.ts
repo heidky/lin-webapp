@@ -1,12 +1,14 @@
 import { makeAutoObservable } from 'mobx'
 import DeviceManager, { MotionCmd } from './DeviceManager'
+import { clampUnit } from '../utils'
 
 class MotionManager {
   deviceManager: DeviceManager
 
   absolutePosition: number = 1
+  vibeZero: number = 0.0
   vibeThrow: number = 0.5
-  vibeSpeed: number = 0
+  vibeSpeed: number = 0.0
   vibeSelected: boolean = false
 
   constructor(deviceManager: DeviceManager) {
@@ -15,8 +17,7 @@ class MotionManager {
   }
 
   setAbsolutePosition(pos: number) {
-    if (pos > 1) pos = 1
-    else if (pos < 0) pos = 0
+    pos = clampUnit(pos)
 
     this.absolutePosition = pos
     const motionData: MotionCmd = [
@@ -29,16 +30,31 @@ class MotionManager {
   }
 
   setVibe(t: number, s: number) {
-    if (t > 1) t = 1
-    if (t < 0) t = 0
-    if (s > 1) s = 1
-    if (s < 0) s = 0
+    this.setVibeWithZero(0, t, s)
+  }
 
-    if (this.vibeThrow !== t || this.vibeSpeed !== s) {
+  setVibeWithZero(z: number, t: number, s: number) {
+    if (z === null) z = this.vibeZero
+    if (t === null) t = this.vibeThrow
+    if (s === null) s = this.vibeSpeed
+
+    z = clampUnit(z)
+    t = clampUnit(t)
+    s = clampUnit(s)
+
+    if (z > t) {
+      const v = (z + t) / 2
+      z = v
+      t = z
+    }
+
+    if (this.vibeThrow !== t || this.vibeSpeed !== s || this.vibeZero !== z) {
+      this.vibeZero = z
       this.vibeThrow = t
       this.vibeSpeed = s
 
       const motionData: MotionCmd = [
+        ['z', z],
         ['t', t],
         ['s', s],
       ]

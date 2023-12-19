@@ -18,8 +18,8 @@ function MotionControl() {
             <Pad2D
               valid={vibeActive && vibeSelected}
               x={vibeSpeed}
-              y={vibeThrow}
-              onMove={(x, y) => motionManager.setVibe(y, x)}
+              y={1 - vibeThrow}
+              onMove={(x, y) => motionManager.setVibe(1 - y, x)}
             />
           </div>
         </div>
