@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/lin-webapp/static/css/main.95a6de00.css",
-    "main.js": "/lin-webapp/static/js/main.ea37c11e.js",
+    "main.css": "/lin-webapp/static/css/main.2901626a.css",
+    "main.js": "/lin-webapp/static/js/main.05f46b82.js",
     "static/js/787.b6e21888.chunk.js": "/lin-webapp/static/js/787.b6e21888.chunk.js",
     "index.html": "/lin-webapp/index.html",
-    "main.95a6de00.css.map": "/lin-webapp/static/css/main.95a6de00.css.map",
-    "main.ea37c11e.js.map": "/lin-webapp/static/js/main.ea37c11e.js.map",
+    "main.2901626a.css.map": "/lin-webapp/static/css/main.2901626a.css.map",
+    "main.05f46b82.js.map": "/lin-webapp/static/js/main.05f46b82.js.map",
     "787.b6e21888.chunk.js.map": "/lin-webapp/static/js/787.b6e21888.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.95a6de00.css",
-    "static/js/main.ea37c11e.js"
+    "static/css/main.2901626a.css",
+    "static/js/main.05f46b82.js"
   ]
 }
